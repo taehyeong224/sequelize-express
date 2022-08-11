@@ -1,0 +1,14 @@
+{
+  "sourceMaps": "inline",
+  "presets": [
+    ["@babel/preset-typescript"],
+    [
+      "@babel/preset-env",
+      {
+        "targets": {
+          "node": "current"
+        }
+      }
+    ]
+  ]
+}

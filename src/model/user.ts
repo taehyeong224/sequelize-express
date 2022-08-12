@@ -1,8 +1,8 @@
+import Sq from "sequelize";
 import { sequelize } from "../db/setup";
-import Sq from 'sequelize'
 
 export const User = sequelize.define(
-  'user',
+  "user",
   {
     userName: Sq.STRING,
     password: Sq.STRING,
@@ -13,5 +13,5 @@ export const User = sequelize.define(
   {
     timestamps: true,
     freezeTableName: true,
-  },
-)
+  }
+);

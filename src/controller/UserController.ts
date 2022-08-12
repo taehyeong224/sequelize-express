@@ -1,5 +1,5 @@
-import { User } from "src/model/user";
+import { User } from "../model/User";
 
-export async function getUsers () {
-  return User.findAll()
+export async function getUsers() {
+  return await User.findAll();
 }

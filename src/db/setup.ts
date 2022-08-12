@@ -30,10 +30,10 @@ async function syncDB() {
   console.log("syncDB");
   const modelPath = __dirname + "/../model/*.js";
   for (const file of glob.sync(modelPath)) {
+    const modelName = file.split("/").pop().split(".js")[0];
+    console.log("modelName : ", modelName);
     const model = await import(path.resolve(file));
-    console.log("model : ", model.User);
-    await model.User.sync({ alter: ALTER_TABLE === "true" });
+    await model[modelName].sync({ alter: ALTER_TABLE === "true" });
   }
-  // await sequelize.sync({ alter: ALTER_TABLE === "true" });
   ALTER_TABLE === "true" && console.log("sync success");
 }

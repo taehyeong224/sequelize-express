@@ -13,13 +13,19 @@ async function bootstrap() {
   const port = PORT || 3000;
 
   await setupDB();
-  await loadRouter();
-
   setMiddleware();
+  await loadRouter();
+  setErrorMiddleware();
+
   app.listen(port, () => console.log("start"));
 }
 
 function setMiddleware() {
+  app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
+}
+
+function setErrorMiddleware() {
   app.use(function (err, req, res, next) {
     console.error(err.stack);
     res.status(500).send("server error");

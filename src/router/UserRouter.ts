@@ -6,7 +6,7 @@ import {
   getUsers,
   removeUser,
 } from "../controller/UserController";
-import { throwIfInvalid } from "src/util/validate";
+import { throwIfInvalid } from "../util/validate";
 import joi from "joi";
 
 const router = Router();

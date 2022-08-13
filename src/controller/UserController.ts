@@ -2,6 +2,7 @@ import { User } from "../model/User";
 import { pickBy, identity } from "lodash";
 
 export async function getUsers() {
+  console.log("getUsers");
   return await User.findAll();
 }
 
@@ -27,5 +28,5 @@ export async function changeUser(
 
 export async function removeUser(id: number) {
   console.log("removeUser id : ", id);
-  await User.update({ isDeleted: true }, { where: { id } });
+  await User.update({ isDelete: true }, { where: { id } });
 }

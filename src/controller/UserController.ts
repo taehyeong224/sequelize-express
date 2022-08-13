@@ -1,5 +1,8 @@
 import { User } from "../model/User";
-import { pickBy, identity } from "lodash";
+import { pickBy, identity, isEmpty } from "lodash";
+import crypto from "crypto";
+import { CommonError } from "../util/errorModel";
+import { ErrorCode } from "../util/errorCode";
 
 export async function getUsers() {
   console.log("getUsers");
@@ -11,7 +14,35 @@ export async function createUser(params: {
   password: string;
 }) {
   console.log("createUser params : ", params);
-  await User.create(params);
+  const { userName, password } = params;
+  const { password: encryptPassword, salt } = await createPassword(password);
+  await User.create({ userName, password: encryptPassword, salt });
+}
+
+function createSalt(): string {
+  try {
+    const buf = crypto.randomBytes(64);
+    return buf.toString("base64");
+  } catch (e) {
+    console.error("createSalt error : ", e.message);
+    throw new CommonError(
+      "fail create password",
+      ErrorCode.FAIL_CREATE_PASSWORD,
+      500
+    );
+  }
+}
+
+function createPassword(
+  plainPassword: string
+): Promise<{ password: string; salt: string }> {
+  return new Promise((resolve, reject) => {
+    const salt = createSalt();
+    crypto.pbkdf2(plainPassword, salt, 9999, 64, "sha512", (err, key) => {
+      if (err) reject(err);
+      resolve({ password: key.toString("base64"), salt });
+    });
+  });
 }
 
 export async function changeUser(
@@ -23,7 +54,19 @@ export async function changeUser(
 ) {
   console.log("changeUser id, params: ", id, params);
   const removeFalse = pickBy(params, identity);
-  await User.update(removeFalse, { where: { id } });
+  let changedPassword;
+  removeFalse.password &&
+    (changedPassword = await createPassword(removeFalse.password)) &&
+    (await User.update(
+      {
+        ...removeFalse,
+        password: changedPassword.password,
+        salt: changedPassword.salt,
+      },
+      { where: { id } }
+    ));
+  isEmpty(removeFalse.password) &&
+    (await User.update(removeFalse, { where: { id } }));
 }
 
 export async function removeUser(id: number) {

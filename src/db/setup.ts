@@ -7,7 +7,10 @@ dotenv.config();
 
 const { ALTER_TABLE, MYSQL, MYSQL_HOST } = process.env;
 
-export const sequelize = new Sequelize(MYSQL, { dialect: "mysql" });
+export const sequelize = new Sequelize(MYSQL, {
+  dialect: "mysql",
+  logQueryParameters: true,
+});
 
 export async function setupDB() {
   console.log("setupDB");

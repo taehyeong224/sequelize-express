@@ -16,6 +16,8 @@ export async function createUser(params: {
 }) {
   console.log("createUser params : ", params);
   const { userName, password } = params;
+  const user = await User.findOne({ where: { userName } });
+  if (user) throw new CommonError("already use", ErrorCode.DUPLICATED, 400);
   const { password: encryptPassword, salt } = await createPassword(password);
   await User.create({ userName, password: encryptPassword, salt });
 }

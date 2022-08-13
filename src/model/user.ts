@@ -6,7 +6,10 @@ export const User = sequelize.define(
   {
     userName: Sq.STRING,
     password: Sq.STRING,
-
+    isDelete: {
+      type: Sq.BOOLEAN,
+      defaultValue: false,
+    },
     createdAt: { type: Sq.DATE, defaultValue: Sq.NOW },
     updatedAt: { type: Sq.DATE, defaultValue: Sq.NOW },
   },

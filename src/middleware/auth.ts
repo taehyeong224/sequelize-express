@@ -22,7 +22,18 @@ export async function verifyBearerToken(req, res, next) {
   try {
     const { userId } = verifyToken(idToken);
     console.log("correctly userId", userId);
-    req.user = await User.findOne({ where: { id: userId } });
+    req.user = await User.findOne({
+      attributes: ["id", "userName", "createdAt", "updatedAt", "isDelete"],
+      where: { id: userId },
+      raw: true,
+    });
+    if (req.user.isDelete) {
+      return res.status(401).json({
+        errorCode: ErrorCode.INVALID_TOKEN,
+        message: "deleted user",
+        statusCode: 401,
+      });
+    }
     return next();
   } catch (error) {
     console.error("Error while verifying token : ", error);

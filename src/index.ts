@@ -36,7 +36,6 @@ async function loadRouter() {
   const routePath = __dirname + "/router/*.js";
   console.log("routePath = ", routePath);
   for (const file of glob.sync(routePath)) {
-    console.log("file : ", path.resolve(file));
     const { default: route } = await import(path.resolve(file));
     console.log("route : ", route);
     app.use(`/`, route());

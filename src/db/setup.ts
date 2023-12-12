@@ -2,6 +2,7 @@ import { Sequelize } from "sequelize";
 import dotenv from "dotenv";
 import path from "path";
 import glob from "glob";
+import * as console from "console";
 
 dotenv.config();
 
@@ -34,7 +35,6 @@ async function syncDB() {
   const modelPath = __dirname + "/../model/*.js";
   for (const file of glob.sync(modelPath)) {
     const modelName = file.split("/").pop().split(".js")[0];
-    console.log("modelName : ", modelName);
     const model = await import(path.resolve(file));
     await model[modelName].sync({ alter: ALTER_TABLE === "true" });
   }

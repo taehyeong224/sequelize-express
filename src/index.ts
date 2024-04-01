@@ -3,6 +3,7 @@ import express from "express";
 import dotenv from "dotenv";
 import path from "path";
 import glob from "glob";
+import { errorHandler } from "./middleware/errorHandler";
 
 dotenv.config();
 const app = express();
@@ -16,7 +17,7 @@ async function bootstrap() {
   setMiddleware();
   await loadRouter();
   setErrorMiddleware();
-
+  app.use(errorHandler);
   app.listen(port, () => console.log("start"));
 }
 

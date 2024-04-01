@@ -4,6 +4,7 @@ import crypto from "crypto";
 import { CommonError } from "../util/errorModel";
 import { ErrorCode } from "../util/errorCode";
 import { createToken } from "../util/jwtToken";
+import * as console from "console";
 
 export async function getUsers() {
   console.log("getUsers");
@@ -91,7 +92,7 @@ export async function loginUser(userName: string, password: string) {
   const { JWT_EXPIRE, JWT_REFRESH_EXPIRE } = process.env;
   const accessToken = createToken(user.id, JWT_EXPIRE);
   const refreshToken = createToken(user.id, JWT_REFRESH_EXPIRE);
-
+  console.log('accessToken : ', accessToken)
   return {
     accessToken,
     refreshToken,

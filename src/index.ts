@@ -6,15 +6,44 @@ import glob from "glob";
 import dayjs from "dayjs";
 import { Request, Response } from "express";
 import { CommonError } from "./util/errorModel";
+import { elaClient } from "./db/elasticConfig";
+import { ELASTICSEARCH_INDEX_NAME } from "./util/constList";
+
 dotenv.config();
 const app = express();
 
 const { PORT } = process.env;
 
+async function connectElasticSearch() {
+  try {
+    const ping = await elaClient.ping();
+    console.log("ping : ", ping);
+    const exist = await elaClient.indices.exists({
+      index: ELASTICSEARCH_INDEX_NAME,
+    });
+    !exist
+      ? await createElasticIndex()
+      : console.log("index test already exist");
+    console.log("elasticsearch connect");
+  } catch (e) {
+    console.error("elasticsearch connect error : ", e);
+  }
+}
+
+async function createElasticIndex() {
+  try {
+    await elaClient.indices.create({
+      index: ELASTICSEARCH_INDEX_NAME,
+    });
+  } catch (e) {
+    console.error("createElasticIndex error : ", e);
+  }
+}
 async function bootstrap() {
   const port = PORT || 3000;
 
   await setupDB();
+  await connectElasticSearch();
   setMiddleware();
   await loadRouter();
   setErrorHandler();

@@ -16,6 +16,7 @@ const router = Router();
 export default function userRouter() {
   router.get("/user", verifyBearerToken, asyncMiddleware(fetchUsers));
   router.post("/user", verifyBearerToken, asyncMiddleware(postUser));
+  router.post("/usercreate", asyncMiddleware(postUser));
   router.post("/user/login", asyncMiddleware(postLoginUser));
   router.patch("/user/:userId", verifyBearerToken, asyncMiddleware(patchUser));
   router.delete(
